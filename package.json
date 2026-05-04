@@ -24,7 +24,7 @@
   "homepage": "https://github.com/lukeapage/eslint-plugin-destructuring",
   "bugs": "https://github.com/lukeapage/eslint-plugin-destructuring/issues",
   "peerDependencies": {
-    "eslint": ">=8.40.0"
+    "eslint": ">=9.0.0"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

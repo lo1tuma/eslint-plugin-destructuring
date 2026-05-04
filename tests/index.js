@@ -31,17 +31,13 @@ describe('plugin', () => {
     assert.strictEqual(plugin.meta.version, pkg.version);
   });
 
-  it('provides a legacy recommended config', () => {
-    assert.deepStrictEqual(plugin.configs.recommended.rules, {
+  it('provides a recommended flat config that bundles itself as the plugin', () => {
+    const recommended = plugin.configs.recommended;
+    assert.strictEqual(recommended.plugins.destructuring, plugin);
+    assert.deepStrictEqual(recommended.rules, {
       'destructuring/no-rename': 'error',
       'destructuring/in-params': 'error',
       'destructuring/in-methods-params': 'error',
     });
-  });
-
-  it('provides a flat recommended config that bundles itself as the plugin', () => {
-    const flat = plugin.configs['flat/recommended'];
-    assert.strictEqual(flat.plugins.destructuring, plugin);
-    assert.deepStrictEqual(flat.rules, plugin.configs.recommended.rules);
   });
 });

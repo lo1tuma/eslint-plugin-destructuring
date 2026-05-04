@@ -3,7 +3,7 @@ ESLint-Plugin-Destructuring
 
 [![NPM version][npm-image]][npm-url] [![Build Status][ci-image]][ci-url]
 
-Destructuring-specific linting rules for ESLint. Supports ESLint 8 and 9 (including the new flat config).
+Destructuring-specific linting rules for ESLint.
 
 # Installation
 
@@ -11,19 +11,17 @@ Install [ESLint](https://www.github.com/eslint/eslint) and the plugin:
 
     $ npm install --save-dev eslint eslint-plugin-destructuring
 
-This plugin requires Node 20.19+ and ESLint 8.40+.
+This plugin requires Node 20.19+ and ESLint 9+ (flat config). The package ships as ESM.
 
 # Configuration
 
-## Flat config (ESLint 9, `eslint.config.js`)
-
-The package ships as ESM. Import it from your flat config:
+In your `eslint.config.js`:
 
 ```js
 import destructuring from 'eslint-plugin-destructuring';
 
 export default [
-  destructuring.configs['flat/recommended'],
+  destructuring.configs.recommended,
 ];
 ```
 
@@ -44,18 +42,9 @@ export default [
 ];
 ```
 
-## Legacy config (`.eslintrc`)
-
-```json
-{
-  "plugins": ["destructuring"],
-  "extends": ["plugin:destructuring/recommended"]
-}
-```
-
 # List of provided rules
 
-All rules are off by default. The `recommended` and `flat/recommended` configs turn them all on.
+All rules are off by default. The `recommended` config turns them all on.
 
 * [no-rename](docs/rules/no-rename.md): Forbid rename syntax when object destructuring.
 * [in-params](docs/rules/in-params.md): Configure destructuring within parameters.
