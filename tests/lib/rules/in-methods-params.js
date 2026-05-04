@@ -3,15 +3,16 @@
 // ------------------------------------------------------------------------------
 
 import { RuleTester } from 'eslint';
-import rule from '../../../src/rules/in-methods-params';
-import { test } from '../utils';
+import rule from '../../../src/rules/in-methods-params.js';
+import { test } from '../utils.js';
 
 // ------------------------------------------------------------------------------
 // Tests
 // ------------------------------------------------------------------------------
 
 const ruleTester = new RuleTester();
-const errors = [{ message: 'Do not use destructuring in method params.' }];
+const errors = [{ messageId: 'noDestructuring' }];
+
 ruleTester.run('in-methods-params', rule, {
   valid: [
     test({ code: 'var { a } = b;' }),

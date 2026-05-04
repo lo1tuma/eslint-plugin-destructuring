@@ -1,28 +1,50 @@
 ESLint-Plugin-Destructuring
 ===========================
 
-[![Maintenance Status][status-image]][status-url] [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url]
+[![NPM version][npm-image]][npm-url] [![Build Status][ci-image]][ci-url]
 
-Destructuring-specific linting rules for ESLint.
+Destructuring-specific linting rules for ESLint. Supports ESLint 8 and 9 (including the new flat config).
 
 # Installation
 
-Install [ESLint](https://www.github.com/eslint/eslint) either locally or globally.
+Install [ESLint](https://www.github.com/eslint/eslint) and the plugin:
 
-    $ npm install eslint
+    $ npm install --save-dev eslint eslint-plugin-destructuring
 
-If you installed `ESLint` globally, you have to install the plugin globally too. Otherwise, install it locally.
-
-    $ npm install eslint-plugin-destructuring
+This plugin requires Node 18.18+ and ESLint 8.40+.
 
 # Configuration
 
-Add a `plugins` section and specify eslint-plugin-destructuring as a plugin.
+## Flat config (ESLint 9, `eslint.config.js`)
 
-Then, enable all of the rules that you would like to use.
+The package ships as ESM. Import it from your flat config:
 
-## Recommended configuration
-This plugin exports a `recommended` configuration that enforces all the rules. You can configure the plugin as follows:
+```js
+import destructuring from 'eslint-plugin-destructuring';
+
+export default [
+  destructuring.configs['flat/recommended'],
+];
+```
+
+Or pick the rules manually:
+
+```js
+import destructuring from 'eslint-plugin-destructuring';
+
+export default [
+  {
+    plugins: { destructuring },
+    rules: {
+      'destructuring/no-rename': 'error',
+      'destructuring/in-params': ['error', { 'max-params': 1 }],
+      'destructuring/in-methods-params': 'error',
+    },
+  },
+];
+```
+
+## Legacy config (`.eslintrc`)
 
 ```json
 {
@@ -30,17 +52,18 @@ This plugin exports a `recommended` configuration that enforces all the rules. Y
   "extends": ["plugin:destructuring/recommended"]
 }
 ```
-# List of provided rules
-Rules are divided into categories for your convenience. All rules are off by default, unless you use one of the plugin's configurations which turn all relevant rules on.
 
-### Stylistic Issues
-These rules are purely matters of style and are quite subjective.
+# List of provided rules
+
+All rules are off by default. The `recommended` and `flat/recommended` configs turn them all on.
+
 * [no-rename](docs/rules/no-rename.md): Forbid rename syntax when object destructuring.
 * [in-params](docs/rules/in-params.md): Configure destructuring within parameters.
 * [in-methods-params](docs/rules/in-methods-params.md): Forbid destructuring within method parameters.
 
 # Contributing
-Contributions are always welcome!.
+
+Contributions are always welcome.
 
 # License
 
@@ -49,11 +72,5 @@ eslint-plugin-destructuring is licensed under the [MIT License](http://www.opens
 [npm-url]: https://npmjs.org/package/eslint-plugin-destructuring
 [npm-image]: http://img.shields.io/npm/v/eslint-plugin-destructuring.svg?style=flat-square
 
-[travis-url]: https://travis-ci.org/lukeapage/eslint-plugin-destructuring
-[travis-image]: http://img.shields.io/travis/lukeapage/eslint-plugin-destructuring/master.svg?style=flat-square
-
-[deps-url]: https://david-dm.org/lukeapage/eslint-plugin-destructuring
-[deps-image]: https://img.shields.io/david/dev/lukeapage/eslint-plugin-destructuring.svg?style=flat-square
-
-[status-url]: https://github.com/lukeapage/eslint-plugin-destructuring/pulse
-[status-image]: http://img.shields.io/badge/status-maintained-brightgreen.svg?style=flat-square
+[ci-url]: https://github.com/lukeapage/eslint-plugin-destructuring/actions/workflows/ci.yml
+[ci-image]: https://img.shields.io/github/actions/workflow/status/lukeapage/eslint-plugin-destructuring/ci.yml?branch=master&style=flat-square

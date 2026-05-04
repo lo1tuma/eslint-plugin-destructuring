@@ -3,15 +3,16 @@
 // ------------------------------------------------------------------------------
 
 import { RuleTester } from 'eslint';
-import rule from '../../../src/rules/no-rename';
-import { test } from '../utils';
+import rule from '../../../src/rules/no-rename.js';
+import { test } from '../utils.js';
 
 // ------------------------------------------------------------------------------
 // Tests
 // ------------------------------------------------------------------------------
 
 const ruleTester = new RuleTester();
-const errors = [{ message: 'Do not use destructuring rename for valid identifiers.' }];
+const errors = [{ messageId: 'noRename' }];
+
 ruleTester.run('no-rename', rule, {
   valid: [
     test({ code: 'var { a } = b;' }),
@@ -23,16 +24,13 @@ ruleTester.run('no-rename', rule, {
     test({ code: 'var a = { b : { c : b } };' }),
     test({ code: 'var { "data-prop" : a } = b;' }),
   ],
-  invalid: [test({
-    code: 'var { a : c } = b;',
-    errors,
-  }),
+  invalid: [
     test({
-      code: 'var { a : a } = b;',
+      code: 'var { a : c } = b;',
       errors,
     }),
     test({
-      code: 'var { a : c } = b;',
+      code: 'var { a : a } = b;',
       errors,
     }),
     test({
@@ -42,5 +40,6 @@ ruleTester.run('no-rename', rule, {
     test({
       code: 'var { "data-prop" : a, a : c } = b;',
       errors,
-    })],
+    }),
+  ],
 });

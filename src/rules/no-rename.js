@@ -1,10 +1,13 @@
-//------------------------------------------------------------------------------
-// Rule Definition
-//------------------------------------------------------------------------------
-
-module.exports = {
+export default {
   meta: {
-    docs: {},
+    type: 'suggestion',
+    docs: {
+      description: 'Disallow renaming destructured properties when the source name is a valid identifier.',
+    },
+    schema: [],
+    messages: {
+      noRename: 'Do not use destructuring rename for valid identifiers.',
+    },
   },
 
   create: function noRename(context) {
@@ -15,7 +18,7 @@ module.exports = {
           node.value &&
           node.value.type === 'Identifier' &&
           node.key.type !== 'Literal') {
-          context.report(node, 'Do not use destructuring rename for valid identifiers.');
+          context.report({ node, messageId: 'noRename' });
         }
       },
     };

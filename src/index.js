@@ -1,19 +1,37 @@
-import fs from 'fs';
-import path from 'path';
-import zipObject from 'lodash.zipobject';
+import { createRequire } from 'node:module';
 
-const rules = fs.readdirSync(path.resolve(__dirname, 'rules')).map(f => f.replace(/\.js$/, ''));
+import noRename from './rules/no-rename.js';
+import inParams from './rules/in-params.js';
+import inMethodsParams from './rules/in-methods-params.js';
 
-module.exports = {
-  // eslint-disable-next-line global-require, import/no-dynamic-require
-  rules: zipObject(rules, rules.map(rule => require(`./rules/${rule}`))),
+const { name, version } = createRequire(import.meta.url)('../package.json');
+
+const recommendedRules = {
+  'destructuring/no-rename': 'error',
+  'destructuring/in-params': 'error',
+  'destructuring/in-methods-params': 'error',
+};
+
+const plugin = {
+  meta: { name, version },
+  rules: {
+    'no-rename': noRename,
+    'in-params': inParams,
+    'in-methods-params': inMethodsParams,
+  },
   configs: {
+    // Legacy (.eslintrc) config — consumers add `plugins: ['destructuring']` themselves.
     recommended: {
-      rules: {
-        'destructuring/no-rename': 'error',
-        'destructuring/in-params': 'error',
-        'destructuring/in-methods-params': 'error',
-      },
+      rules: recommendedRules,
     },
   },
 };
+
+// Flat config (eslint.config.js, ESLint 9). Bundles the plugin reference so
+// users only need to spread this object into their config array.
+plugin.configs['flat/recommended'] = {
+  plugins: { destructuring: plugin },
+  rules: recommendedRules,
+};
+
+export default plugin;

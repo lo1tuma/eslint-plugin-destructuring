@@ -3,16 +3,16 @@
 // ------------------------------------------------------------------------------
 
 import { RuleTester } from 'eslint';
-import rule from '../../../src/rules/in-params';
-import { test } from '../utils';
+import rule from '../../../src/rules/in-params.js';
+import { test } from '../utils.js';
 
 // ------------------------------------------------------------------------------
 // Tests
 // ------------------------------------------------------------------------------
 
 const ruleTester = new RuleTester();
-const errors = [{ message:
-  'Do not use destructuring in params when there are more than 1 params.' }];
+const errors = [{ messageId: 'tooManyParams', data: { maxParams: '1' } }];
+
 ruleTester.run('in-params', rule, {
   valid: [
     test({ code: 'var { a } = b;' }),
@@ -25,10 +25,11 @@ ruleTester.run('in-params', rule, {
     test({ code: 'function t(a, b) {}' }),
     test({ code: 'function t(a, b = (() => { const {a} = b; })) {}' }),
   ],
-  invalid: [test({
-    code: 'function t({ a }, b) {}',
-    errors,
-  }),
+  invalid: [
+    test({
+      code: 'function t({ a }, b) {}',
+      errors,
+    }),
     test({
       code: 'var a = ({a}, b) => a;',
       errors,
@@ -40,5 +41,6 @@ ruleTester.run('in-params', rule, {
     test({
       code: 'function t(b, { a, d, c }) {}',
       errors,
-    })],
+    }),
+  ],
 });

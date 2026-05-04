@@ -1,19 +1,49 @@
-import assert from 'assert';
-import fs from 'fs';
-import path from 'path';
-import plugin from '../src/index';
+import assert from 'node:assert';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath, pathToFileURL } from 'node:url';
+import { createRequire } from 'node:module';
 
-const rules = fs.readdirSync(path.resolve(__dirname, '../src/rules/'))
-    .map(f => path.basename(f, '.js'));
+import plugin from '../src/index.js';
 
-describe('all rule files should be exported by the plugin', () => {
-  it('should export all rules', () => {
-    rules.forEach((ruleName) => {
-      assert.equal(
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const require = createRequire(import.meta.url);
+const pkg = require('../package.json');
+
+const ruleNames = fs.readdirSync(path.resolve(__dirname, '../src/rules/'))
+  .map(f => path.basename(f, '.js'));
+
+describe('plugin', () => {
+  it('exports all rule files', async () => {
+    for (const ruleName of ruleNames) {
+      const moduleUrl = pathToFileURL(
+        path.resolve(__dirname, `../src/rules/${ruleName}.js`),
+      ).href;
+      const { default: ruleModule } = await import(moduleUrl);
+      assert.strictEqual(
         plugin.rules[ruleName],
-        // eslint-disable-next-line global-require, import/no-dynamic-require
-        require(path.join('../src/rules', ruleName)),
-        `rule ${ruleName} is not exported`);
+        ruleModule,
+        `rule ${ruleName} is not exported`,
+      );
+    }
+  });
+
+  it('exposes plugin meta for flat config compatibility', () => {
+    assert.strictEqual(plugin.meta.name, pkg.name);
+    assert.strictEqual(plugin.meta.version, pkg.version);
+  });
+
+  it('provides a legacy recommended config', () => {
+    assert.deepStrictEqual(plugin.configs.recommended.rules, {
+      'destructuring/no-rename': 'error',
+      'destructuring/in-params': 'error',
+      'destructuring/in-methods-params': 'error',
     });
+  });
+
+  it('provides a flat recommended config that bundles itself as the plugin', () => {
+    const flat = plugin.configs['flat/recommended'];
+    assert.strictEqual(flat.plugins.destructuring, plugin);
+    assert.deepStrictEqual(flat.rules, plugin.configs.recommended.rules);
   });
 });

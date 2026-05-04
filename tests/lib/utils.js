@@ -1,10 +1,8 @@
-import defaults from 'lodash.defaults';
-
 export function test(t) {
-  return defaults(t, {
-    parserOptions: {
+  return Object.assign({
+    languageOptions: {
       sourceType: 'module',
-      ecmaVersion: 6,
+      ecmaVersion: 2022,
     },
-  });
+  }, t);
 }
