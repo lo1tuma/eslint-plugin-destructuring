@@ -32,9 +32,14 @@ module.exports = {
 
     return {
       ObjectPattern(node) {
-        if (node.parent.type === 'ArrowFunctionExpression' ||
-        node.parent.type === 'FunctionDeclaration') {
-          if (node.parent.params.length > maxParams) {
+        // A destructured param with a default value (e.g. `function f({ a } = {})`)
+        // is wrapped in an AssignmentPattern, so the function is the grandparent.
+        const fnNode = node.parent.type === 'AssignmentPattern' ?
+          node.parent.parent : node.parent;
+
+        if (fnNode && (fnNode.type === 'ArrowFunctionExpression' ||
+          fnNode.type === 'FunctionDeclaration')) {
+          if (fnNode.params.length > maxParams) {
             context.report(node, 'Do not use destructuring in params when there' +
               ` are more than ${maxParams} params.`);
           }
