@@ -1,10 +1,10 @@
-import { createRequire } from 'node:module';
-
 import noRename from './rules/no-rename.js';
 import inParams from './rules/in-params.js';
 import inMethodsParams from './rules/in-methods-params.js';
 
-const { name, version } = createRequire(import.meta.url)('../package.json');
+import pkg from '../package.json' with { type: 'json' };
+
+const { name, version } = pkg;
 
 const recommendedRules = {
   'destructuring/no-rename': 'error',

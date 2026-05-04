@@ -2,13 +2,11 @@ import assert from 'node:assert';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { createRequire } from 'node:module';
 
 import plugin from '../src/index.js';
+import pkg from '../package.json' with { type: 'json' };
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const require = createRequire(import.meta.url);
-const pkg = require('../package.json');
 
 const ruleNames = fs.readdirSync(path.resolve(__dirname, '../src/rules/'))
   .map(f => path.basename(f, '.js'));
