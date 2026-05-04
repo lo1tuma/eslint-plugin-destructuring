@@ -11,7 +11,7 @@ Install [ESLint](https://www.github.com/eslint/eslint) and the plugin:
 
     $ npm install --save-dev eslint eslint-plugin-destructuring
 
-This plugin requires Node 18.18+ and ESLint 8.40+.
+This plugin requires Node 20.19+ and ESLint 8.40+.
 
 # Configuration
 
