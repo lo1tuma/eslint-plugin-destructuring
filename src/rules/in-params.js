@@ -30,21 +30,23 @@ module.exports = {
       maxParams = option['max-params'];
     }
 
-    return {
-      ObjectPattern(node) {
+    function checkFunction(node) {
+      if (node.params.length <= maxParams) return;
+      for (const param of node.params) {
         // A destructured param with a default value (e.g. `function f({ a } = {})`)
-        // is wrapped in an AssignmentPattern, so the function is the grandparent.
-        const fnNode = node.parent.type === 'AssignmentPattern' ?
-          node.parent.parent : node.parent;
-
-        if (fnNode && (fnNode.type === 'ArrowFunctionExpression' ||
-          fnNode.type === 'FunctionDeclaration')) {
-          if (fnNode.params.length > maxParams) {
-            context.report(node, 'Do not use destructuring in params when there' +
-              ` are more than ${maxParams} params.`);
-          }
+        // wraps the ObjectPattern in an AssignmentPattern.
+        const target = param.type === 'AssignmentPattern' ? param.left : param;
+        if (target.type === 'ObjectPattern') {
+          context.report(target, 'Do not use destructuring in params when there' +
+            ` are more than ${maxParams} params.`);
         }
-      },
+      }
+    }
+
+    return {
+      FunctionDeclaration: checkFunction,
+      FunctionExpression: checkFunction,
+      ArrowFunctionExpression: checkFunction,
     };
   },
 };

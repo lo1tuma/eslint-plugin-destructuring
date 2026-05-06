@@ -41,6 +41,13 @@ ruleTester.run('in-params', rule, {
     // default-value AssignmentPatterns elsewhere must not match the function check
     test({ code: 'var [{ a } = {}] = b;' }),
     test({ code: 'var { x: { a } = {} } = b;' }),
+
+    // FunctionExpression and object-literal method shorthand (with and without
+    // default values) must follow the same rules as other function shapes.
+    test({ code: 'var f = function ({ a }) {};' }),
+    test({ code: 'var f = function ({ a } = {}) {};' }),
+    test({ code: 'var o = { m({ a }) {} };' }),
+    test({ code: 'var o = { m({ a } = {}) {} };' }),
   ],
   invalid: [test({
     code: 'function t({ a }, b) {}',
@@ -101,6 +108,39 @@ ruleTester.run('in-params', rule, {
     }),
     test({
       code: 'function t({ a }) {}',
+      options: [{ 'max-params': 0 }],
+      errors: errorsZero,
+    }),
+
+    // FunctionExpression and object-literal method shorthand: same rules
+    // apply whether or not the destructured param has a default value.
+    test({
+      code: 'var f = function (b, { a }) {};',
+      errors,
+    }),
+    test({
+      code: 'var f = function (b, { a } = {}) {};',
+      errors,
+    }),
+    test({
+      code: 'var o = { m(a, { b }) {} };',
+      errors,
+    }),
+    test({
+      code: 'var o = { m(a, { b } = {}) {} };',
+      errors,
+    }),
+    test({
+      code: 'function build() { return { process(asset, { options }) {} }; }',
+      errors,
+    }),
+    test({
+      code: 'var o = { m({ a }) {} };',
+      options: [{ 'max-params': 0 }],
+      errors: errorsZero,
+    }),
+    test({
+      code: 'var o = { m({ a } = {}) {} };',
       options: [{ 'max-params': 0 }],
       errors: errorsZero,
     }),
